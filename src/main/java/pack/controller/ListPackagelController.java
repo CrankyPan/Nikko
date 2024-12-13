@@ -20,6 +20,7 @@ import java.util.List;
 /**
  * Servlet implementation class ListPackagelController
  */
+@WebServlet("/index")
 public class ListPackagelController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -36,6 +37,9 @@ public class ListPackagelController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	List<Package> packages = new ArrayList<>();
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
 
         try {
             // Load the SQL Server driver
@@ -65,10 +69,20 @@ public class ListPackagelController extends HttpServlet {
             con.close();
 
         } catch (SQLException e) {
-            System.out.println("Error retrieving packages: " + e.getMessage());
+            // Log the exception
+            System.err.println("Error retrieving packages: " + e.getMessage());
+            // Optionally, display an error page
+            request.setAttribute("errorMessage", "An error occurred while fetching packages.");
+            RequestDispatcher req = request.getRequestDispatcher("error.jsp"); // Assuming you have an error.jsp
+            req.forward(request, response); 
         } catch (ClassNotFoundException e) {
-            System.out.println("Error loading SQL Server driver: " + e.getMessage());
+            // ... error handling for ClassNotFoundException ...
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) { /* Ignored */}
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) { /* Ignored */}
+            try { if (con != null) con.close(); } catch (SQLException e) { /* Ignored */}
         }
+
 
         request.setAttribute("packages", packages);
         RequestDispatcher req = request.getRequestDispatcher("index.jsp");
