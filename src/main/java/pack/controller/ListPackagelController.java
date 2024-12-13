@@ -22,13 +22,6 @@ import java.util.List;
  */
 public class ListPackagelController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	static Connection con = null;
-	static PreparedStatement ps = null;
-	static Statement stmt = null;
-	static ResultSet rs = null;
-	int packageId;
-	String packageName;
-	double packagePrice;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -42,46 +35,45 @@ public class ListPackagelController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		List<Package> packages = new ArrayList<Package>();
+	List<Package> packages = new ArrayList<>();
 
-		try {
-			//call getConnection() method
-			con = ConnectionManager.getConnection();
+        try {
+            // Load the SQL Server driver
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
-			//3. create statement 
-			stmt = con.createStatement();
-			String sql = "SELECT * FROM packages ORDER BY packageid";
+            // Connect to the Azure SQL database
+            Connection con = DriverManager.getConnection(
+                "jdbc:sqlserver://nikkospace.database.windows.net:1433;" +
+                "database=haiya;user=nikko@nikkospace;password={your_password_here};" +
+                "encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;" +
+                "loginTimeout=30;"
+            );
 
-			rs = stmt.executeQuery(sql);
+            Statement stmt = con.createStatement();
+            String sql = "SELECT * FROM package ORDER BY packageId"; // Assuming "package" is the table name
+            ResultSet rs = stmt.executeQuery(sql);
 
-			while (rs.next()) {
+            while (rs.next()) {
                 Package p = new Package(
-                    rs.getInt("packageId"), 
-                    rs.getString("packageName"), 
+                    rs.getInt("packageId"),
+                    rs.getString("packageName"),
                     rs.getDouble("packagePrice")
                 );
                 packages.add(p);
             }
 
-			request.setAttribute("packages", packages); // Make the list available to the JSP
+            con.close();
 
-			//5. close connection
-			con.close();
+        } catch (SQLException e) {
+            System.out.println("Error retrieving packages: " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            System.out.println("Error loading SQL Server driver: " + e.getMessage());
+        }
 
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-
-		//set attribute to a servlet request. Set the attribute name to packages
-		request.setAttribute("packages", packages);
-
-		//Obtain the RequestDispatcher from the request object. The the pathname to the resource is listShawl.jsp
-		RequestDispatcher req = request.getRequestDispatcher("index.jsp");
-
-		//Dispatch the request to another resource using forward() methods of the RequestDispatcher
-		req.forward(request, response); 
-	}
+        request.setAttribute("packages", packages);
+        RequestDispatcher req = request.getRequestDispatcher("listPackage.jsp");
+        req.forward(request, response);
+    }
 	
 
 	/**
