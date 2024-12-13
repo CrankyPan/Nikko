@@ -64,7 +64,7 @@ public class DeletePackageController extends HttpServlet {
             System.out.println("Error: No package ID provided.");
         }
 
-        RequestDispatcher req = request.getRequestDispatcher("listPackage.jsp");
+        RequestDispatcher req = request.getRequestDispatcher("index.jsp");
         req.forward(request, response);
     }
 
