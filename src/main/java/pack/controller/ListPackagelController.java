@@ -21,10 +21,10 @@ import java.util.List;
  * Servlet implementation class ListPackagelController
  */
 @WebServlet("/index")
-public class ListPackageController extends HttpServlet {
+public class ListPackagelController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    public ListPackageController() {
+    public ListPackagelController() {
         super();
     }
 
