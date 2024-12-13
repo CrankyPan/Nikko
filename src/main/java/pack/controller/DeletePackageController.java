@@ -21,13 +21,6 @@ import pack.model.Package;
  */
 public class DeletePackageController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	static Connection con = null;
-	static PreparedStatement ps = null;
-	static Statement stmt = null;
-	static ResultSet rs = null;
-	int packageId;
-	String packageName;
-	double packagePrice;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -41,41 +34,41 @@ public class DeletePackageController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		String id = request.getParameter("id"); // Get the 'id' parameter
+	String id = request.getParameter("id");
 
         if (id != null) {
             try {
-                packageId = Integer.parseInt(id);
+                int packageId = Integer.parseInt(id);
 
-                // call getConnection() method 
-                con = ConnectionManager.getConnection();
+                // Load the SQL Server driver
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
-                // 3. create statement 
-                String sql = "DELETE FROM packages WHERE packageId = ?"; // Use packageId
-                ps = con.prepareStatement(sql);
+                // Connect to the Azure SQL database
+                Connection con = DriverManager.getConnection(
+                    "jdbc:sqlserver://nikkospace.database.windows.net:1433;" +
+                    "database=haiya;user=nikko@nikkospace;password={Muhammadyazid01!};" +
+                    "encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;" +
+                    "loginTimeout=30;"
+                );
 
+                String sql = "DELETE FROM package WHERE packageId = ?";
+                PreparedStatement ps = con.prepareStatement(sql);
                 ps.setInt(1, packageId);
-
-                // 4. execute query
                 ps.executeUpdate();
-
-                // 5. close connection 
                 con.close();
 
             } catch (NumberFormatException e) {
                 System.out.println("Error: Invalid package ID format.");
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.out.println("Error deleting package: " + e.getMessage());
+            } catch (ClassNotFoundException e) {
+                System.out.println("Error loading SQL Server driver: " + e.getMessage());
             }
         } else {
             System.out.println("Error: No package ID provided.");
         }
 
-        // Obtain the RequestDispatcher from the request object. The pathname to the resource is index.html
-        RequestDispatcher req = request.getRequestDispatcher("index.jsp");
-
-        // Dispatch the request to another resource using forward() methods of the RequestDispatcher 
+        RequestDispatcher req = request.getRequestDispatcher("listPackage.jsp");
         req.forward(request, response);
     }
 
