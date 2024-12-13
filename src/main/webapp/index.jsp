@@ -14,42 +14,14 @@
     <link rel="stylesheet" href="IndexPackageStyle.css"> </head>
 <body>
 
-<%--  This part is no longer needed since you have the servlet --%>
-<%--
-    <%
-        List<Package> packages = new ArrayList<Package>();
 
-        try {
-            Connection con = ConnectionManager.getConnection();
-            Statement stmt = con.createStatement();
-            String sql = "SELECT * FROM packages ORDER BY packageid";
-            ResultSet rs = stmt.executeQuery(sql);
-
-            while (rs.next()) {
-                Package p = new Package(
-                        rs.getInt("packageId"),
-                        rs.getString("packageName"),
-                        rs.getDouble("packagePrice")
-                );
-                packages.add(p);
-            }
-
-            con.close();
-
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        request.setAttribute("packages", packages);
-    %>
---%>
 
 <header>
     <div id="menu-bar" class="fa fa-bars"></div>
     <a href="#" class="logo"><img class="capal_logo" src="img/CAPAL LOGO.png" alt="Logo"></a>
     <nav class="navbar">
         <a href="index">Home</a>
-        <a href="ListPackageController">Appointment</a> <%-- Updated servlet reference --%>
+        <a href="ListPackagelController">Appointment</a> <%-- Updated servlet reference --%>
         <a href="indexPet.jsp">Pet</a>
         <a href="indexProfile.jsp">Profile</a>
     </nav>
