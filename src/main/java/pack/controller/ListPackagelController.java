@@ -21,22 +21,15 @@ import java.util.List;
  * Servlet implementation class ListPackagelController
  */
 @WebServlet("/index")
-public class ListPackagelController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ListPackagelController() {
+public class ListPackageController extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    public ListPackageController() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	List<Package> packages = new ArrayList<>();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Package> packages = new ArrayList<>();
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -46,56 +39,49 @@ public class ListPackagelController extends HttpServlet {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
             // Connect to the Azure SQL database
-            Connection con = DriverManager.getConnection(
-                "jdbc:sqlserver://nikkospace.database.windows.net:1433;" +
-                "database=haiya;user=nikko@nikkospace;password={Muhammadyazid01!};" +
-                "encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;" +
-                "loginTimeout=30;"
+            con = DriverManager.getConnection(
+                    "jdbc:sqlserver://nikkospace.database.windows.net:1433;" +
+                            "database=haiya;user=nikko@nikkospace;password={Muhammadyazid01!};" + 
+                            "encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;" +
+                            "loginTimeout=30;"
             );
 
-            Statement stmt = con.createStatement();
-            String sql = "SELECT * FROM package ORDER BY packageId"; // Assuming "package" is the table name
-            ResultSet rs = stmt.executeQuery(sql);
+            stmt = con.createStatement();
+            String sql = "SELECT * FROM package ORDER BY packageId"; 
+            rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
                 Package p = new Package(
-                    rs.getInt("packageId"),
-                    rs.getString("packageName"),
-                    rs.getDouble("packagePrice")
+                        rs.getInt("packageId"),
+                        rs.getString("packageName"),
+                        rs.getDouble("packagePrice")
                 );
                 packages.add(p);
             }
 
-            con.close();
-
         } catch (SQLException e) {
             // Log the exception
             System.err.println("Error retrieving packages: " + e.getMessage());
-            // Optionally, display an error page
+
+            // Optionally, display a user-friendly error page
             request.setAttribute("errorMessage", "An error occurred while fetching packages.");
             RequestDispatcher req = request.getRequestDispatcher("error.jsp"); // Assuming you have an error.jsp
-            req.forward(request, response); 
+            req.forward(request, response);
         } catch (ClassNotFoundException e) {
-            // ... error handling for ClassNotFoundException ...
+            // Handle ClassNotFoundException (e.g., log it or display an error)
+            System.err.println("Error loading SQL Server driver: " + e.getMessage());
         } finally {
             try { if (rs != null) rs.close(); } catch (SQLException e) { /* Ignored */}
             try { if (stmt != null) stmt.close(); } catch (SQLException e) { /* Ignored */}
             try { if (con != null) con.close(); } catch (SQLException e) { /* Ignored */}
         }
 
-
         request.setAttribute("packages", packages);
-        RequestDispatcher req = request.getRequestDispatcher("index.jsp");
+        RequestDispatcher req = request.getRequestDispatcher("index.jsp"); 
         req.forward(request, response);
     }
-	
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
 }
