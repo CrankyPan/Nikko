@@ -44,7 +44,7 @@ public class ListPackagelController extends HttpServlet {
             // Connect to the Azure SQL database
             Connection con = DriverManager.getConnection(
                 "jdbc:sqlserver://nikkospace.database.windows.net:1433;" +
-                "database=haiya;user=nikko@nikkospace;password={your_password_here};" +
+                "database=haiya;user=nikko@nikkospace;password={Muhammadyazid01!};" +
                 "encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;" +
                 "loginTimeout=30;"
             );
