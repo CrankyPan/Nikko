@@ -17,13 +17,6 @@ import java.sql.PreparedStatement;
  */
 public class AddPackageController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	static Connection con = null;
-	static PreparedStatement ps = null;
-	static Statement stmt = null;
-	static ResultSet rs = null;
-	int packageId;
-	String packageName;
-	double packagePrice;
 	
     public AddPackageController() {
         super();
