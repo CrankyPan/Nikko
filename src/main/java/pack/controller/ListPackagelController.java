@@ -71,7 +71,7 @@ public class ListPackagelController extends HttpServlet {
         }
 
         request.setAttribute("packages", packages);
-        RequestDispatcher req = request.getRequestDispatcher("listPackage.jsp");
+        RequestDispatcher req = request.getRequestDispatcher("index.jsp");
         req.forward(request, response);
     }
 	
