@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
          pageEncoding="ISO-8859-1"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
 <%@ page import="pack.connection.ConnectionManager" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="pack.model.Package" %>
@@ -18,7 +17,8 @@
         List<Package> packages = new ArrayList<Package>();
 
         try {
-            Connection con = ConnectionManager.getConnection();
+         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            Connection con = DriverManager.getConnection("jdbc:sqlserver://nikkospace.database.windows.net:1433;database=haiya;user=nikko@nikkospace;password=Muhammadyazid01!;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;");
             Statement stmt = con.createStatement();
             String sql = "SELECT * FROM packages ORDER BY packageid";
             ResultSet rs = stmt.executeQuery(sql);
