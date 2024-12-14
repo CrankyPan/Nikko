@@ -43,12 +43,7 @@ public class AddPackageController extends HttpServlet {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
             // Connect to the Azure SQL database (Remember to NOT hardcode your password!)
-            Connection con = DriverManager.getConnection(
-                    "jdbc:sqlserver://nikkospace.database.windows.net:1433;" +
-                            "database=haiya;user=nikko@nikkospace;password={Muhammadyazid01!};" +
-                            "encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;" +
-                            "loginTimeout=30;"
-            );
+            Connection con = DriverManager.getConnection("jdbc:sqlserver://nikkospace.database.windows.net:1433;database=haiya;user=nikko@nikkospace;password=Muhammadyazid01!;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;");
 
             String sql = "INSERT INTO package (packageName, packagePrice) VALUES (?, ?)";
             try (PreparedStatement ps = con.prepareStatement(sql)) { // Use try-with-resources
